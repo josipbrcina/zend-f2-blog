@@ -4,12 +4,14 @@ namespace Blog\Form;
 
 use Zend\Form\Form;
 use Zend\Form\Element;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class Add extends Form
 {
     public function __construct()
     {
         parent::__construct('add');
+        $this->setHydrator(new ClassMethods());
 
         $title = new Element\Text('title');
         $title->setLabel('Title');
