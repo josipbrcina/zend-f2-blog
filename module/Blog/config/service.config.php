@@ -2,4 +2,10 @@
 
 namespace Blog;
 
-return [];
+use Blog\Service\BlogServiceImpl;
+
+return [
+    'invokables' => [
+        'Blog\Service\BlogService' => BlogServiceImpl::class,
+    ]
+];

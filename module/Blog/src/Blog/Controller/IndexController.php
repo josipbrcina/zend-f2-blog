@@ -5,6 +5,7 @@ namespace Blog\Controller;
 use Blog\Entity\Post;
 use Blog\Form\Add;
 use Blog\InputFilter\AddPost;
+use Blog\Service\BlogService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -27,8 +28,10 @@ class IndexController extends AbstractActionController
 
             if ($form->isValid()) {
                 /**
-                 * @todo Save blog post
+                 * @var \Blog\Service\BlogService $blogService
                  */
+                $blogService = $this->getServiceLocator()->get(BlogService::class);
+                $blogService->save($blogPost);
             }
         }
 
