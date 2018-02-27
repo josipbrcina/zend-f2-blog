@@ -48,7 +48,7 @@ class CategoryHydrator implements HydratorInterface
         $category = new Category();
         $category->setId(isset($data['id']) ? intval($data['id']) : null);
         $category->setName(isset($data['name']) ? $data['name'] : null);
-        $category->setSlug(isset($data['slug']) ? $data['slug'] : null);
+        $category->setSlug(isset($data['category_slug']) ? $data['category_slug'] : null);
         $object->setCategory($category);
 
         return $object;

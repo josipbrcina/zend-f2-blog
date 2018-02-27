@@ -47,4 +47,15 @@ class BlogServiceImpl implements BlogService
     {
         return $this->postRepository->fetch($page);
     }
+
+    /**
+     * @param $categorySlug string
+     * @param $postSlug string
+     *
+     * @return Post|null
+     */
+    public function find($categorySlug, $postSlug)
+    {
+        return $this->postRepository->find($categorySlug, $postSlug);
+    }
 }

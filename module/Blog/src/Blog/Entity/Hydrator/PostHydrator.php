@@ -24,6 +24,7 @@ class PostHydrator implements HydratorInterface
           'title' => $object->getTitle(),
           'slug' => $object->getSlug(),
           'content' => $object->getContent(),
+          'created' => $object->getCreated()
         ];
     }
 
@@ -44,6 +45,7 @@ class PostHydrator implements HydratorInterface
         $object->setTitle(isset($data['title']) ? $data['title'] : null);
         $object->setSlug(isset($data['slug']) ? $data['slug'] : null);
         $object->setContent(isset($data['content']) ? $data['content'] : null);
+        $object->setCreated(isset($data['created']) ? $data['created'] : null);
 
         return $object;
     }

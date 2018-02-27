@@ -13,6 +13,11 @@ class PostRepositoryImpl implements PostRepository
 {
     use AdapterAwareTrait;
 
+    /**
+     * Saves a blog post
+     * @param Post $post
+     * @return mixed
+     */
     public function save(Post $post)
     {
         $sql = new \Zend\Db\Sql\Sql($this->adapter);
@@ -29,6 +34,10 @@ class PostRepositoryImpl implements PostRepository
         $statement->execute();
     }
 
+    /**
+     * @param $page int
+     * @return \Zend\Paginator\Paginator
+     */
     public function fetch($page)
     {
         $sql = new \Zend\Db\Sql\Sql($this->adapter);
@@ -44,7 +53,8 @@ class PostRepositoryImpl implements PostRepository
             ->join(
                 ['c' => 'category'], // Table name
                 'c.id = p.category_id', // Condition
-                ['category_id' => 'id', 'name', 'category_slug' => 'slug']  // Columns
+                ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
+                $select::JOIN_INNER
             )
             ->order('p.id DESC');
 
@@ -59,5 +69,46 @@ class PostRepositoryImpl implements PostRepository
         $paginator->setItemCountPerPage(5);
 
         return $paginator;
+    }
+
+    /**
+     * @param $categorySlug string
+     * @param $postSlug string
+     *
+     * @return Post|null
+     */
+    public function find($categorySlug, $postSlug)
+    {
+        $sql = new \Zend\Db\Sql\Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            'id',
+            'title',
+            'slug',
+            'content',
+            'created'
+        ])
+            ->from(['p' => 'post'])
+            ->join(
+                ['c' => 'category'], // Table name
+                'c.id = p.category_id', // Condition
+                ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
+                $select::JOIN_INNER
+            )
+            ->where([
+                'c.slug' => $categorySlug,
+                'p.slug' => $postSlug
+            ]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $hydrator = new AggregateHydrator();
+        $hydrator->add(new PostHydrator());
+        $hydrator->add(new CategoryHydrator());
+
+        $resultSet = new HydratingResultSet($hydrator, new Post());
+        $resultSet->initialize($result);
+
+        return ($resultSet->count() > 0 ? $resultSet->current() : null);
     }
 }

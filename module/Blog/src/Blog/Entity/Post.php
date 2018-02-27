@@ -29,6 +29,11 @@ class Post
     protected $category;
 
     /**
+     * @var int
+     */
+    protected $created;
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -108,4 +113,19 @@ class Post
         $this->id = $id;
     }
 
+    /**
+     * @return int
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param int $created
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
 }

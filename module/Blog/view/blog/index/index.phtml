@@ -2,15 +2,24 @@
 <?php if (!empty ($this->paginator)) : ?>
     <?php foreach ($this->paginator as $post) : ?>
         <?php /** @var \Blog\Entity\Post $post */ ?>
-        <strong>ID: </strong> <?php echo $this->escapeHtml($post->getId()); ?>
+        <?php $postedAt = $this->dateFormat(
+                $post->getCreated(),
+                IntlDateFormatter::MEDIUM, // Date
+                IntlDateFormatter::MEDIUM, // Time
+                'en_US'
+        ); ?>
+        <h1><?php echo $post->getCategory()->getSlug() ?></h1>
+        <h2>
+            <a href="<?php echo $this->url('display-post', [
+                    'categorySlug' => $post->getCategory()->getSlug(),
+                    'postSlug' => $post->getSlug()
+        ]); ?>">
+                <?php echo $this->escapeHtml($post->getTitle()); ?>
+            </a>
+        </h2>
         <br />
-        <strong>Title: </strong> <?php echo $this->escapeHtml($post->getTitle()); ?>
-        <br />
-        <strong>Category: </strong> <?php echo $this->escapeHtml($post->getCategory()->getName()); ?>
-        <br />
-        <strong>Content: </strong> <?php echo $this->escapeHtml($post->getContent()); ?>
-        <br />
-        <?php echo nl2br($this->escapeHtml($post->getContent())); ?>
+        <?php echo sprintf($this->translate('Posted on %s in the %s category'), $postedAt,
+                $this->escapeHtml($post->getCategory()->getName())); ?>
         <hr />
     <?php endforeach; ?>
 

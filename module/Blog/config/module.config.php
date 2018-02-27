@@ -49,6 +49,20 @@ return [
                     ]
                 ],
             ],
+            'display-post' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/blog/posts/:categorySlug/:postSlug',
+                    'constraints' => [
+                        'categorySlug' => '[a-zA-Z0-9-]+',
+                        'postSlug' => '[a-zA-Z0-9-]+',
+                    ],
+                    'defaults' => [
+                        'controller' => 'Blog\Controller\Index',
+                        'action' => 'viewPost'
+                    ]
+                ]
+            ]
         ],
     ],
     'controllers' => [

@@ -20,4 +20,12 @@ interface PostRepository extends RepositoryInterface
      */
     public function fetch($page);
 
+    /**
+     * @param $categorySlug string
+     * @param $postSlug string
+     *
+     * @return Post|null
+     */
+    public function find($categorySlug, $postSlug);
+
 }
