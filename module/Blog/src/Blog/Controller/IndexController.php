@@ -19,7 +19,7 @@ class IndexController extends AbstractActionController
          * @var \Blog\Service\BlogService $blogService
          */
         $blogService = $this->getServiceLocator()->get('Blog\Service\BlogService');
-        $variables['posts'] = $blogService->fetchAll();
+        $variables['paginator'] = $blogService->fetch($this->params()->fromRoute('page'));
 
         return new ViewModel($variables);
     }

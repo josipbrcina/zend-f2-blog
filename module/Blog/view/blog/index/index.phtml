@@ -1,6 +1,6 @@
 <h1><?php echo $this->translate('Posts'); ?></h1>
-<?php if (!empty ($this->posts)) : ?>
-    <?php foreach ($this->posts as $post) : ?>
+<?php if (!empty ($this->paginator)) : ?>
+    <?php foreach ($this->paginator as $post) : ?>
         <?php /** @var \Blog\Entity\Post $post */ ?>
         <strong>ID: </strong> <?php echo $this->escapeHtml($post->getId()); ?>
         <br />
@@ -13,6 +13,15 @@
         <?php echo nl2br($this->escapeHtml($post->getContent())); ?>
         <hr />
     <?php endforeach; ?>
+
+    <?php
+
+    echo $this->paginationControl($this->paginator,
+        'Sliding',
+        'partial/pagination',
+        ['route' => 'blog/paged']
+    );
+    ?>
 <?php else : ?>
     <p><?php echo $this->translate('There are currently no posts.'); ?></p>
 <?php endif; ?>

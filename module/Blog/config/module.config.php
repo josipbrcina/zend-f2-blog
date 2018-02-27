@@ -17,6 +17,7 @@ return [
                         '__NAMESPACE__' => 'Blog\Controller',
                         'controller'    => 'Index',
                         'action'        => 'index',
+                        'page'          => 1,
                     ],
                 ],
                 'may_terminate' => true,
@@ -33,6 +34,19 @@ return [
                             ],
                         ],
                     ],
+                    'paged' => [
+                        'type' => 'Segment',
+                        'options' => [
+                            'route' => '/page/:page',
+                            'constraints' => [
+                                'page' => '[0-9]+',
+                            ],
+                            'defaults' => [
+                                'controller' => 'Blog\Controller\index',
+                                'action' => 'index'
+                            ]
+                        ]
+                    ]
                 ],
             ],
         ],

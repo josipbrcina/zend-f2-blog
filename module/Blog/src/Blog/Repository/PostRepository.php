@@ -15,9 +15,9 @@ interface PostRepository extends RepositoryInterface
     public function save(Post $post);
 
     /**
-     * Fetches all posts.
-     * @return Post[]
+     * @param $page int
+     * @return \Zend\Paginator\Paginator
      */
-    public function fetchAll();
+    public function fetch($page);
 
 }
