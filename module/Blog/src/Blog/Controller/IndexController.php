@@ -19,6 +19,10 @@ class IndexController extends AbstractActionController
     public function addAction()
     {
         $form = new Add();
+        $variables = [
+            'form' => $form,
+            'success' => false
+        ];
 
         if ($this->request->isPost()) {
             $blogPost = new Post();
@@ -32,11 +36,10 @@ class IndexController extends AbstractActionController
                  */
                 $blogService = $this->getServiceLocator()->get(BlogService::class);
                 $blogService->save($blogPost);
+                $variables['success'] = true;
             }
         }
 
-        return new ViewModel([
-            'form' => $form,
-        ]);
+        return new ViewModel($variables);
     }
 }

@@ -1,6 +1,9 @@
 <h1>Add Blog Post</h1>
 
-<?php
+<?php if (isset($this->success) && $this->success === true) : ?>
+<div class="alert alert-success"><strong>Success!</strong> The blog post has been added.</div>
+
+<?php endif;
 
 /**
  * @var $form \Zend\Form\Form
