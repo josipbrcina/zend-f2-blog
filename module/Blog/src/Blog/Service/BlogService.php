@@ -39,4 +39,10 @@ interface BlogService
      * @return void
      */
     public function update(Post $post);
+
+    /**
+     * @param $postId
+     * @return void
+     */
+    public function delete($postId);
 }

@@ -77,4 +77,13 @@ class BlogServiceImpl implements BlogService
     {
         $this->postRepository->update($post);
     }
+
+    /**
+     * @param $postId
+     * @return void
+     */
+    public function delete($postId)
+    {
+        $this->postRepository->delete($postId);
+    }
 }

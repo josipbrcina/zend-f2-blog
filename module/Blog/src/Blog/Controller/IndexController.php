@@ -90,6 +90,13 @@ class IndexController extends AbstractActionController
         ]);
     }
 
+    public function deleteAction()
+    {
+        $this->getBlogService()->delete($this->params()->fromRoute('postId'));
+        $this->flashMessenger()->addSuccessMessage('The post has been deleted!');
+        return $this->redirect()->toRoute('blog');
+    }
+
     /**
      * @return \Blog\Service\BlogService
      */
