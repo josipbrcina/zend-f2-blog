@@ -111,4 +111,66 @@ class PostRepositoryImpl implements PostRepository
 
         return ($resultSet->count() > 0 ? $resultSet->current() : null);
     }
+
+    /**
+     * @param $postId
+     *
+     * @return Post|null
+     */
+    public function findById($postId)
+    {
+        $sql = new \Zend\Db\Sql\Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            'id',
+            'title',
+            'slug',
+            'content',
+            'created'
+        ])
+            ->from(['p' => 'post'])
+            ->join(
+                ['c' => 'category'], // Table name
+                'c.id = p.category_id', // Condition
+                ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
+                $select::JOIN_INNER
+            )
+            ->where([
+                'p.id' => $postId
+            ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $hydrator = new AggregateHydrator();
+        $hydrator->add(new PostHydrator());
+        $hydrator->add(new CategoryHydrator());
+
+        $resultSet = new HydratingResultSet($hydrator, new Post());
+        $resultSet->initialize($result);
+
+        return ($resultSet->count() > 0 ? $resultSet->current() : null);
+    }
+
+    /**
+     * @param Post $post
+     * @return void
+     */
+    public function update(Post $post)
+    {
+        $sql = new \Zend\Db\Sql\Sql($this->adapter);
+        $update = $sql->update('post')
+            ->set([
+                'title' => $post->getTitle(),
+                'slug' => $post->getSlug(),
+                'content' => $post->getContent(),
+                'category_id' => $post->getCategory()->getId()
+            ])
+            ->where([
+                'id' => $post->getid()
+            ]);
+
+        $statement = $sql->prepareStatementForSqlObject($update);
+        $statement->execute();
+    }
 }

@@ -1,8 +1,8 @@
-<h1>Add Blog Post</h1>
+<h1>Edit Blog Post</h1>
+
 <?php
-/**
- * @var $form \Zend\Form\Form
- */
+
+/** @var $form \Blog\Form\Add */
 $form = $this->form;
 $form->prepare();
 echo $this->form()->openTag($form);
@@ -22,8 +22,9 @@ echo $this->form()->openTag($form);
 </div>
 
 <div class="form-group">
-    <?php echo $this->formRow($form->get('category')); ?>
+    <?php echo $this->formRow($form->get('category_id')); ?>
 </div>
 
+<?php echo $this->formHidden($form->get('id')); ?>
 <?php echo $this->formSubmit($form->get('submit')); ?>
 <?php echo $this->form()->closeTag(); ?>

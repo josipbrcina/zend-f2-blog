@@ -4,6 +4,7 @@ namespace Blog\Controller;
 
 use Blog\Entity\Post;
 use Blog\Form\Add;
+use Blog\Form\Edit;
 use Blog\InputFilter\AddPost;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -24,7 +25,6 @@ class IndexController extends AbstractActionController
         $form = new Add();
         $variables = [
             'form' => $form,
-            'success' => false
         ];
 
         if ($this->request->isPost()) {
@@ -35,7 +35,7 @@ class IndexController extends AbstractActionController
 
             if ($form->isValid()) {
                 $this->getBlogService()->save($blogPost);
-                $variables['success'] = true;
+                $this->flashMessenger()->success('The post has been added!');
             }
         }
 
@@ -55,6 +55,38 @@ class IndexController extends AbstractActionController
 
         return new ViewModel([
             'post' => $post
+        ]);
+    }
+
+    public function editAction()
+    {
+        $form = new Edit();
+
+        if ($this->request->isPost()) {
+            $post = new Post();
+            $form->bind($post);
+            $form->setData($this->request->getPost());
+
+            if ($form->isValid()) {
+                $this->getBlogService()->update($post);
+                $this->flashMessenger()->addSuccessMessage('Post has been updated!');
+            }
+        } else {
+            $post = $this->getBlogService()->findById($this->params()->fromRoute('postId'));
+
+            if ($post === null) {
+                $this->getResponse()->setStatusCode(Response::STATUS_CODE_404);
+            } else {
+                $form->bind($post);
+
+                $form->get('slug')->setValue($post->getSlug());
+                $form->get('id')->setValue($post->getId());
+                $form->get('category_id')->setValue($post->getCategory()->getId());
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
         ]);
     }
 

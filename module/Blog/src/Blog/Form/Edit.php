@@ -8,16 +8,18 @@ use Zend\Form\Form;
 use Zend\Form\Element;
 use Zend\Stdlib\Hydrator\Aggregate\AggregateHydrator;
 
-class Add extends Form
+class Edit extends Form
 {
     public function __construct()
     {
-        parent::__construct('add');
+        parent::__construct('edit');
 
         $hydrator = new AggregateHydrator();
         $hydrator->add(new PostHydrator());
         $hydrator->add(new CategoryHydrator());
         $this->setHydrator($hydrator);
+
+        $id = new Element\Hidden('id');
 
         $title = new Element\Text('title');
         $title->setLabel('Title');
@@ -41,9 +43,10 @@ class Add extends Form
         ]);
 
         $submit = new Element\Submit('submit');
-        $submit->setValue('Add Post');
+        $submit->setValue('Save Post');
         $submit->setAttribute('class', 'btn btn-primary');
 
+        $this->add($id);
         $this->add($title);
         $this->add($slug);
         $this->add($content);

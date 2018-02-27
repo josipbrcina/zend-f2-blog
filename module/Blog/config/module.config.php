@@ -62,6 +62,20 @@ return [
                         'action' => 'viewPost'
                     ]
                 ]
+            ],
+            'edit' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/blog/edit/:postId',
+                    'constraints' => [
+                        'postId' => '[0-9]+',
+
+                    ],
+                    'defaults' => [
+                        'controller' => 'Blog\Controller\Index',
+                        'action' => 'edit'
+                    ]
+                ]
             ]
         ],
     ],
