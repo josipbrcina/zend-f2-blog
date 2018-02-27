@@ -13,4 +13,10 @@ interface BlogService
      */
     public function save(Post $post);
 
+    /**
+     * Fetches all blog posts
+     * @return Post[]
+     */
+    public function fetchAll();
+
 }

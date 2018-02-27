@@ -36,4 +36,14 @@ class BlogServiceImpl implements BlogService
     {
         $this->postRepository->save($post);
     }
+
+    /**
+     * Fetches all blog posts
+     * @return Post[]
+     */
+    public function fetchAll()
+    {
+        return $this->postRepository->fetchAll();
+    }
+
 }

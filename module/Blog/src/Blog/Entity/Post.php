@@ -5,6 +5,10 @@ namespace Blog\Entity;
 class Post
 {
     /**
+     * @var
+     */
+    protected $id;
+    /**
      * @var string
      */
     protected $title;
@@ -81,12 +85,27 @@ class Post
     }
 
     /**
-     * @param string $category
+     * @param Category $category
      */
-    public function setCategory($category)
+    public function setCategory(Category $category)
     {
         $this->category = $category;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
 }
