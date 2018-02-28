@@ -29,14 +29,15 @@ class BlogServiceImpl implements BlogService
 
     /**
      * Saves a blog post
+     *
      * @param Post $post
-     * @return Post
+     * @param int $authorId
+     *
+     * @return void
      */
-    public function save(Post $post)
+    public function save(Post $post, $authorId)
     {
-        $this->postRepository->save($post);
-
-        return $post;
+        $this->postRepository->save($post, $authorId);
     }
 
     /**

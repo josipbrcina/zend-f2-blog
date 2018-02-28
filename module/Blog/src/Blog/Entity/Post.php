@@ -34,6 +34,11 @@ class Post
     protected $created;
 
     /**
+     * @var \User\Entity\User;
+     */
+    protected $author;
+
+    /**
      * @return string
      */
     public function getTitle()
@@ -127,5 +132,21 @@ class Post
     public function setCreated($created)
     {
         $this->created = $created;
+    }
+
+    /**
+     * @return \User\Entity\User
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param \User\Entity\User $author
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
     }
 }

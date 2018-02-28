@@ -20,7 +20,11 @@
                 </h2>
 
                 <div class="posted-at">
-                    <?php echo sprintf($this->translate('Posted on %s in the %s category'), $postedAt, $this->escapeHtml($post->getCategory()->getName())); ?>
+                    <?php echo sprintf($this->translate('Posted on %s in the %s category.'), $postedAt, $this->escapeHtml($post->getCategory()->getName())); ?>
+
+                    <?php if ($author = $post->getAuthor()) : ?>
+                        <?php echo sprintf($this->translate("Written by %s"), $author->getFirstName() . ' ' . $author->getLastName() ); ?>
+                    <?php endif; ?>
                 </div>
 
                 <p class="excerpt">

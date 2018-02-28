@@ -2,6 +2,7 @@
 
 namespace Blog\Repository;
 
+use Blog\Entity\Hydrator\AuthorHydrator;
 use Blog\Entity\Hydrator\CategoryHydrator;
 use Blog\Entity\Hydrator\PostHydrator;
 use Blog\Entity\Post;
@@ -15,10 +16,13 @@ class PostRepositoryImpl implements PostRepository
 
     /**
      * Saves a blog post
+     *
      * @param Post $post
-     * @return mixed
+     * @param int $authorId
+     *
+     * @return void
      */
-    public function save(Post $post)
+    public function save(Post $post, $authorId)
     {
         $sql = new \Zend\Db\Sql\Sql($this->adapter);
         $insert = $sql->insert()
@@ -26,8 +30,9 @@ class PostRepositoryImpl implements PostRepository
                 'title' => $post->getTitle(),
                 'slug' => $post->getSlug(),
                 'content' => $post->getContent(),
-                'category_id' => $post->getCategory(),
-                'created' => time()
+                'category_id' => $post->getCategory()->getId(),
+                'created' => time(),
+                'author_id' => $authorId
             ])
             ->into('post');
         $statement = $sql->prepareStatementForSqlObject($insert);
@@ -56,11 +61,25 @@ class PostRepositoryImpl implements PostRepository
                 ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
                 $select::JOIN_INNER
             )
+            ->join(
+                ['a' => 'user'],
+                'a.id = p.author_id',
+                [
+                    'author_id' => 'id',
+                    'author_first_name' => 'first_name',
+                    'author_last_name' => 'last_name',
+                    'author_email' => 'email',
+                    'author_created' => 'created',
+                    'author_user_group' => 'user_group'
+                ],
+                $select::JOIN_LEFT
+            )
             ->order('p.id DESC');
 
         $hydrator = new AggregateHydrator();
         $hydrator->add(new PostHydrator());
         $hydrator->add(new CategoryHydrator());
+        $hydrator->add(new AuthorHydrator());
 
         $resultSet = new HydratingResultSet($hydrator, new Post());
         $paginatorAdapter = new \Zend\Paginator\Adapter\DbSelect($select, $this->adapter, $resultSet);
@@ -95,6 +114,19 @@ class PostRepositoryImpl implements PostRepository
                 ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
                 $select::JOIN_INNER
             )
+            ->join(
+                ['a' => 'user'],
+                'a.id = p.author_id',
+                [
+                    'author_id' => 'id',
+                    'author_first_name' => 'first_name',
+                    'author_last_name' => 'last_name',
+                    'author_email' => 'email',
+                    'author_created' => 'created',
+                    'author_user_group' => 'user_group'
+                ],
+                $select::JOIN_LEFT
+            )
             ->where([
                 'c.slug' => $categorySlug,
                 'p.slug' => $postSlug
@@ -105,6 +137,7 @@ class PostRepositoryImpl implements PostRepository
         $hydrator = new AggregateHydrator();
         $hydrator->add(new PostHydrator());
         $hydrator->add(new CategoryHydrator());
+        $hydrator->add(new AuthorHydrator());
 
         $resultSet = new HydratingResultSet($hydrator, new Post());
         $resultSet->initialize($result);
@@ -135,6 +168,19 @@ class PostRepositoryImpl implements PostRepository
                 ['category_id' => 'id', 'name', 'category_slug' => 'slug'], // Columns
                 $select::JOIN_INNER
             )
+            ->join(
+                ['a' => 'user'],
+                'a.id = p.author_id',
+                [
+                    'author_id' => 'id',
+                    'author_first_name' => 'first_name',
+                    'author_last_name' => 'last_name',
+                    'author_email' => 'email',
+                    'author_created' => 'created',
+                    'author_user_group' => 'user_group'
+                ],
+                $select::JOIN_LEFT
+            )
             ->where([
                 'p.id' => $postId
             ]);
@@ -145,6 +191,7 @@ class PostRepositoryImpl implements PostRepository
         $hydrator = new AggregateHydrator();
         $hydrator->add(new PostHydrator());
         $hydrator->add(new CategoryHydrator());
+        $hydrator->add(new AuthorHydrator());
 
         $resultSet = new HydratingResultSet($hydrator, new Post());
         $resultSet->initialize($result);

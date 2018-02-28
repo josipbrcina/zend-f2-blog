@@ -22,10 +22,12 @@ class IndexController extends AbstractActionController
 
     public function addAction()
     {
+        if (!$user = $this->identity()) {
+            $this->flashMessenger()->addErrorMessage('You must be logged in to add posts!');
+            return $this->redirect()->toRoute('blog');
+        }
+
         $form = new Add();
-        $variables = [
-            'form' => $form,
-        ];
 
         if ($this->request->isPost()) {
             $blogPost = new Post();
@@ -34,12 +36,15 @@ class IndexController extends AbstractActionController
             $form->setData($this->request->getPost());
 
             if ($form->isValid()) {
-                $this->getBlogService()->save($blogPost);
+                $this->getBlogService()->save($blogPost, $user->id);
                 $this->flashMessenger()->success('The post has been added!');
+                $this->redirect()->toRoute('blog');
             }
         }
 
-        return new ViewModel($variables);
+        return new ViewModel([
+            'form' => $form
+        ]);
     }
 
     public function viewPostAction()
