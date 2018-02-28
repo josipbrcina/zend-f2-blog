@@ -15,6 +15,15 @@ return [
     'service_manager' => [
         'factories' => [
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
+
+            'Zend\Authentication\AuthenticationService' => function (\Zend\ServiceManager\ServiceLocatorInterface $serviceManager) {
+                /**
+                 * @var \User\Service\UserService $userService
+                 */
+                $userService = $serviceManager->get('User\Service\UserService');
+
+                return $userService->getAuthenticationService();
+            }
         ],
     ],
 ];

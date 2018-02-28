@@ -35,6 +35,16 @@ return [
                     ],
                 ],
             ],
+            'login' => [
+                'type' => 'Literal',
+                'options' => [
+                    'route' => '/login',
+                    'defaults' => [
+                        'controller' => 'User\Controller\Index',
+                        'action' => 'login',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [

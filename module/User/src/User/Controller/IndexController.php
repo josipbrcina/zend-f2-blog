@@ -2,11 +2,10 @@
 
 namespace User\Controller;
 
-use Blog\Entity\Post;
-use Blog\Form\Add;
-use Blog\Form\Edit;
-use Blog\InputFilter\AddPost;
-use Zend\Http\Response;
+use User\Entity\User;
+use User\Form\Add;
+use User\Form\Login;
+use User\Service\UserService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -20,65 +19,17 @@ class IndexController extends AbstractActionController
     public function addAction()
     {
         $form = new Add();
-        $variables = [
-            'form' => $form,
-        ];
 
         if ($this->request->isPost()) {
-            $blogPost = new Post();
-            $form->bind($blogPost);
-            $form->setInputFilter(new AddPost());
+            $user = new User();
+            $form->bind($user);
+            $form->setInputFilter($this->getServiceLocator()->get('User\InputFilter\AddUser'));
             $form->setData($this->request->getPost());
 
             if ($form->isValid()) {
-                $this->getBlogService()->save($blogPost);
-                $this->flashMessenger()->success('The post has been added!');
-            }
-        }
-
-        return new ViewModel($variables);
-    }
-
-    public function viewPostAction()
-    {
-        $categorySlug = $this->params()->fromRoute('categorySlug');
-        $postSlug = $this->params()->fromRoute('postSlug');
-        $post = $this->getBlogService()->find($categorySlug, $postSlug);
-
-        if ($post === null) {
-            $this->getResponse()
-                ->setStatusCode(Response::STATUS_CODE_404);
-        }
-
-        return new ViewModel([
-            'post' => $post
-        ]);
-    }
-
-    public function editAction()
-    {
-        $form = new Edit();
-
-        if ($this->request->isPost()) {
-            $post = new Post();
-            $form->bind($post);
-            $form->setData($this->request->getPost());
-
-            if ($form->isValid()) {
-                $this->getBlogService()->update($post);
-                $this->flashMessenger()->addSuccessMessage('Post has been updated!');
-            }
-        } else {
-            $post = $this->getBlogService()->findById($this->params()->fromRoute('postId'));
-
-            if ($post === null) {
-                $this->getResponse()->setStatusCode(Response::STATUS_CODE_404);
-            } else {
-                $form->bind($post);
-
-                $form->get('slug')->setValue($post->getSlug());
-                $form->get('id')->setValue($post->getId());
-                $form->get('category_id')->setValue($post->getCategory()->getId());
+                $user->setUserGroup(UserService::GROUP_REGULAR);
+                $this->getUserService()->add($user);
+                $this->flashMessenger()->addSuccessMessage('The user has been added!');
             }
         }
 
@@ -87,19 +38,42 @@ class IndexController extends AbstractActionController
         ]);
     }
 
-    public function deleteAction()
+    public function loginAction()
     {
-        $this->getBlogService()->delete($this->params()->fromRoute('postId'));
-        $this->flashMessenger()->addSuccessMessage('The post has been deleted!');
-        return $this->redirect()->toRoute('blog');
+        if ($this->identity() !== null) {
+            $this->flashMessenger()->addErrorMessage('You are already logged in!');
+            $this->redirect()->toRoute('home');
+        }
+
+        $form = new Login();
+
+        if ($this->request->isPost()) {
+            $form->setData($this->request->getPost());
+            $form->setInputFilter(new \User\InputFilter\Login());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $loginResult = $this->getUserService()->login($data['email'], $data['password']);
+
+                if ($loginResult) {
+                    $this->flashMessenger()->addSuccessMessage('You have been logged in!');
+                } else {
+                    $this->flashMessenger()->addErrorMessage('Invalid login credentials!');
+                }
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
     }
 
     /**
-     * @return \Blog\Service\BlogService
+     * @return \User\Service\UserService
      */
-    protected function getBlogService()
+    protected function getUserService()
     {
-        return $this->getServiceLocator()->get('Blog\Service\BlogService');
+        return $this->getServiceLocator()->get('User\Service\UserService');
     }
 
 }

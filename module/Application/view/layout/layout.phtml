@@ -25,6 +25,9 @@
         ; ?>
 
     </head>
+
+    <?php $user = $this->identity(); ?>
+
     <body>
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container">
@@ -40,8 +43,22 @@
                     <ul class="nav navbar-nav">
                         <li><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
                         <li><a href="<?php echo $this->url('blog') ?>"><?php echo $this->translate('Blog') ?></a></li>
+
+                        <?php if ($user != null) : ?>
+                            <li><a href="#"><?php echo $this->translate('Log out') ?></a></li>
+                        <?php else : ?>
+                            <li><a href="<?php echo $this->url('login') ?>"><?php echo $this->translate('Login') ?></a></li>
+                        <?php endif; ?>
                     </ul>
                 </div><!--/.nav-collapse -->
+            </div>
+
+            <div class="col-xs-4" style="color:#fff;" id="logged-in-status">
+                <?php if ($user != null) : ?>
+                    <?php echo sprintf($this->translate('You are logged in as %s %s'), $user->first_name, $user->last_name); ?>
+                <?php else : ?>
+                    <?php echo $this->translate('You are not logged in.'); ?>
+                <?php endif; ?>
             </div>
         </nav>
         <div class="container">
