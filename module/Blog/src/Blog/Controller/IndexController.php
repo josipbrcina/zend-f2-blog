@@ -37,7 +37,7 @@ class IndexController extends AbstractActionController
 
             if ($form->isValid()) {
                 $this->getBlogService()->save($blogPost, $user->id);
-                $this->flashMessenger()->success('The post has been added!');
+                $this->flashMessenger()->addSuccessMessage('The post has been added!');
                 $this->redirect()->toRoute('blog');
             }
         }
