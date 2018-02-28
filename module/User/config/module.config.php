@@ -45,6 +45,16 @@ return [
                     ],
                 ],
             ],
+            'logout' => [
+                'type' => 'Literal',
+                'options' => [
+                    'route' => '/logout',
+                    'defaults' => [
+                        'controller' => 'User\Controller\Index',
+                        'action' => 'logout',
+                    ],
+                ],
+            ],
         ],
     ],
     'controllers' => [

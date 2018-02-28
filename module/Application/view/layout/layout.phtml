@@ -45,7 +45,7 @@
                         <li><a href="<?php echo $this->url('blog') ?>"><?php echo $this->translate('Blog') ?></a></li>
 
                         <?php if ($user != null) : ?>
-                            <li><a href="#"><?php echo $this->translate('Log out') ?></a></li>
+                            <li><a href="<?php echo $this->url('logout') ?>"><?php echo $this->translate('Log out') ?></a></li>
                         <?php else : ?>
                             <li><a href="<?php echo $this->url('login') ?>"><?php echo $this->translate('Login') ?></a></li>
                         <?php endif; ?>
